@@ -44,12 +44,19 @@
 <div class="container-fluid">
     <div class="jumbotron jumbotron" class="rounded">
         <div class="container">
-            <h1 class="display-4">Aspect Ping-pong-atron</h1>
-            <p class="lead">Currently playing: {{ current_game }} </p>
-            <p>Started playing at: {{ start_time }} </p>
-            <form action="/api/finished" method="post">
-                <button class="btn btn-primary" type="submit">Game over</button>
-            </form>
+            <h1 class="display-4"><img src="/images/aspect.png">Aspect Ping-pong-atron</h1>
+            {% if current_game %}
+                <p class="lead">Currently playing: {{ current_game }} </p>
+                <p>Started playing at: {{ start_time }} </p>
+                <form action="/api/finished" method="post">
+                    <button class="btn btn-primary" type="submit">Game over</button>
+                </form>
+            {% else %}
+                <p class="lead">No one is playing..</p>
+                <form action="/api/quickbook" method="post">
+                    <button class="btn btn-success" type="submit">Play now!</button>
+                </form>
+            {% endif %}
         </div>
     </div>
 
@@ -65,6 +72,7 @@
             </form>
             <br>
             <h2>Current queue:</h2>
+            {% if queue %}
             <ul class="list-group">
                 {% for val in queue %}
                 <li class="list-group-item" {% if loop.first %}style="background-color:LightGreen" {% endif %}>
@@ -74,6 +82,9 @@
                 </li>
                 {% endfor %}
             </ul>
+            {% else %}
+            <p>No one is waiting!</p>
+            {% endif %}
         </div>
         <div class="column col-sm-6">
             <h1>Need a partner?</h1>
@@ -86,6 +97,7 @@
             </form>
             <br>
             <h2>Looking for partners:</h2>
+            {% if looking_for_partners %}
             <div class="list-group">
                 {% for val in looking_for_partners %}
                 <button class="list-group-item list-group-item-action" onclick="pairMe('{{ val }}')" type="button">
@@ -95,6 +107,9 @@
                 </button>
                 {% endfor %}
             </div>
+            {% else %}
+            <p>All paired up!</p>
+            {% endif %}
         </div>
     </div>
 </div>

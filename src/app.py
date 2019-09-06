@@ -20,6 +20,11 @@ def get_index():
                            start_time=start_time)
 
 
+@app.route('/images/<path:path>')
+def send_image(path):
+    return send_from_directory('images', path)
+
+
 @app.route('/css/<path:path>')
 def send_css(path):
     return send_from_directory('css', path)
@@ -67,6 +72,12 @@ def game_over():
     else:
         current_game = ''
         start_time = ''
+    return redirect('/')
+
+
+@app.route('/api/quickbook', methods=['POST'])
+def quick_book():
+    add_match('Ad-hoc game')
     return redirect('/')
 
 
