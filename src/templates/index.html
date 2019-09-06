@@ -36,9 +36,6 @@
                 "name2": name2
             }));
         }
-
-
-
     </script>
 
     <title>Hello, world!</title>
@@ -70,7 +67,7 @@
             <h2>Current queue:</h2>
             <ul class="list-group">
                 {% for val in queue %}
-                <li %} %} class="list-group-item" endif if loop.firststyle="background-color:LightGreen" {% {%>
+                <li class="list-group-item" {% if loop.first %}style="background-color:LightGreen" {% endif %}>
                     <a class="mr-3" href="/api/delete/{{val}}">
                         <i class="fa fa-trash-o fa-1g" style="color:red"></i>
                     </a>{% if loop.first %}<span style="font-weight:bold">Next up: </span>{% endif %} {{ val }}
