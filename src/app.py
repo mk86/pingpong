@@ -55,7 +55,7 @@ def add_match(match):
         start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
 
-@app.route('/api/delete/<match>')
+@app.route('/api/delete/<match>', methods=['POST'])
 def remove_from_queue(match):
     if match in queue:
         queue.remove(match)

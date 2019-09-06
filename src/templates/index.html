@@ -75,11 +75,10 @@
             {% if queue %}
             <ul class="list-group">
                 {% for val in queue %}
-                <li class="list-group-item" {% if loop.first %}style="background-color:LightGreen" {% endif %}>
-                    <a class="mr-3" href="/api/delete/{{val}}">
-                        <i class="fa fa-trash-o fa-1g" style="color:red"></i>
-                    </a>{% if loop.first %}<span style="font-weight:bold">Next up: </span>{% endif %} {{ val }}
-                </li>
+                <div class="btn-group" style="padding:0;width=100%">
+                    <button class="btn btn-danger" onclick="deleteMatch('{{ val }}')" type="button"><i class="fa fa-trash-o fa-1g" ></i></button>
+                    <button class="btn {% if loop.first %} btn-success {% else %} btn-light {% endif %} text-left" type="button" style="width:100%" disabled>{% if loop.first %}<span style="font-weight:bold">Next up: </span>{% endif %} {{ val }}</button>
+                </div>
                 {% endfor %}
             </ul>
             {% else %}
