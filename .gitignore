@@ -105,4 +105,4 @@ venv.bak/
 
 # IntelliJ
 .idea/
-*/iml
+*.iml
