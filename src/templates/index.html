@@ -30,6 +30,24 @@
                 'name2': txtBox.value
             }));
         }
+
+        function httpDelete(path, body) {
+            var request = new XMLHttpRequest();
+            request.open('DELETE', path, true);
+            request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+            request.onload = function() {
+                location.reload();
+            };
+            request.send('{}');
+        }
+
+        function deletePlayer(name) {
+            httpDelete('/api/player/'+name);
+        }
+
+        function deleteMatch(name) {
+            httpDelete('/api/match/'+name);
+        }
     </script>
 
     <title>Aspect Ping-pong-atron</title>
@@ -57,23 +75,27 @@
     <div class="row">
         <div class="column col-sm-6">
             <h1>Have a partner?</h1>
-            <form action="/api/match" method="post">
-                <div class="form-group">
-                    <input class="form-control" name="match" placeholder="Join the queue.." type="text">
+            <form class="input-group mb-3" action="/api/match" method="post">
+                <input type="text" class="form-control" placeholder="Join the queue.." name="match">
+                <div class="input-group-append">
+                    <button class="btn btn-success" type="submit">
+                        <i class="fa fa-plus fa-1g"></i>
+                    </button>
                 </div>
-                <button class="btn btn-primary" type="submit">Submit</button>
             </form>
-            <br>
             <h2>Current queue:</h2>
             {% if queue %}
             <ul class="list-group">
                 {% for val in queue %}
-                <div class="btn-group" style="padding:0;width=100%">
-                    <button class="btn btn-danger" onclick="deleteMatch('{{ val }}')" type="button"><i
-                            class="fa fa-trash-o fa-1g"></i></button>
+                <div class="btn-group" style="width=100%">
+                    <button class="btn btn-danger" onclick="deleteMatch('{{ val }}')" type="button">
+                        <i class="fa fa-trash-o fa-1g"></i>
+                    </button>
                     <button class="btn {% if loop.first %} btn-success {% else %} btn-light {% endif %} text-left"
-                            type="button" style="width:100%" disabled>{% if loop.first %}<span style="font-weight:bold">Next up: </span>{%
-                        endif %} {{ val }}
+                            type="button" style="width:100%" disabled>
+                        {% if loop.first %}
+                        <span style="font-weight:bold">Next up: </span>
+                        {% endif %} {{ val }}
                     </button>
                 </div>
                 {% endfor %}
@@ -84,22 +106,27 @@
         </div>
         <div class="column col-sm-6">
             <h1>Need a partner?</h1>
-            <form action="/api/player" method="post">
-                <div class="form-group">
-                    <input class="form-control" name="name" placeholder="Enter name" type="text">
+            <form class="input-group mb-3" action="/api/player" method="post">
+                <input type="text" class="form-control" placeholder="Enter name.." name="name">
+                <div class="input-group-append">
+                    <button class="btn btn-success" type="submit">
+                        <i class="fa fa-plus fa-1g"></i>
+                    </button>
                 </div>
-                <button class="btn btn-primary" type="submit">Submit</button>
             </form>
-            <br>
             <h2>Looking for partners:</h2>
             {% if looking_for_partners %}
             <div class="list-group">
                 {% for val in looking_for_partners %}
-                <button class="list-group-item list-group-item-action" onclick="pairMe('{{ val }}')" type="button">
-                    <a class="mr-3" href="/api/deletelooking/{{val}}">
-                        <i class="fa fa-trash-o fa-1g" style="color:red"></i>
-                    </a>{{ val }}
-                </button>
+                <div class="btn-group" style="width=100%">
+                    <button class="btn btn-danger" onclick="deletePlayer('{{ val }}')" type="button">
+                        <i class="fa fa-trash-o fa-1g"></i>
+                    </button>
+                    <button class="btn btn-light text-left" onclick="pairMe('{{ val }}')" type="button"
+                            style="width:100%">
+                        {{ val }}
+                    </button>
+                </div>
                 {% endfor %}
             </div>
             {% else %}
