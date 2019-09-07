@@ -5,94 +5,118 @@ from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__, static_url_path='/static')
 
-queue = ['Mark vs Jess', 'Patrik vs Aaron', 'Nicole vs NEK', 'Le vs The World']
-looking_for_partners = ['Adam']
-current_game = 'Anthony vs Jake'
-start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
+# State is populated with dummy data for demo
+# If actually using this we should store the state properly
+
+class Game:
+    def __init__(self, current_game=''):
+        self.current_game = current_game
+        self.start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M") if current_game else ''
+
+    def __bool__(self):
+        return self.current_game != ''
+
+
+class Games:
+    def __init__(self):
+        self.current = Game('Anthony vs Jake')
+        self.queue = ['Mark vs Jess', 'Patrik vs Aaron', 'Nicole vs NEK', 'Le vs The World']
+
+    def add(self, match):
+        if not match:
+            return
+
+        if self.current:
+            self.queue.append(match)
+        else:
+            self.current = Game(match)
+
+    def cancel(self, match):
+        if match in self.queue:
+            self.queue.remove(match)
+
+    def next(self):
+        if self.queue:
+            self.current = Game(self.queue.pop(0))
+        else:
+            self.current = Game()
+
+
+class Players:
+    def __init__(self):
+        self.looking = ['Adam']
+
+    def add(self, name):
+        if name:
+            self.looking.append(name)
+
+    def remove(self, name):
+        if name in self.looking:
+            self.looking.remove(name)
+
+
+games = Games()
+players = Players()
 
 
 @app.route('/', methods=['GET'])
 def get_index():
     return render_template('index.html',
-                           queue=queue,
-                           current_game=current_game,
-                           looking_for_partners=looking_for_partners,
-                           start_time=start_time)
+                           queue=games.queue,
+                           current_game=games.current.current_game,
+                           start_time=games.current.start_time,
+                           looking_for_partners=players.looking)
 
 
-@app.route('/api/add', methods=['POST'])
-def add_to_queue():
-    match = request.form['match']
-    add_match(match)
+@app.route('/api/match', methods=['POST'])
+def add_match():
+    games.add(request.form['match'])
     return redirect('/')
 
 
-def add_match(match):
-    if not match:
-        return
-
-    global current_game
-    global start_time
-    if current_game:
-        queue.append(match)
-    else:
-        current_game = match
-        start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-
-
-@app.route('/api/delete/<match>', methods=['POST'])
-def remove_from_queue(match):
-    if match in queue:
-        queue.remove(match)
-    return redirect('/')
-
-
-@app.route('/api/finished', methods=['POST'])
-def game_over():
-    global current_game
-    global start_time
-    if queue:
-        current_game = queue.pop(0)
-        start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-    else:
-        current_game = ''
-        start_time = ''
+@app.route('/api/match/<match>', methods=['DELETE'])
+def remove_match(match):
+    games.cancel(match)
     return redirect('/')
 
 
 @app.route('/api/quickbook', methods=['POST'])
 def quick_book():
-    add_match('Ad-hoc game')
+    games.add('Ad-hoc game')
     return redirect('/')
 
 
-@app.route('/api/needpartner', methods=['POST'])
-def add_to_looking_queue():
-    name = request.form['name']
-    if name:
-        looking_for_partners.append(name)
+@app.route('/api/finished', methods=['POST'])
+def game_over():
+    games.next()
     return redirect('/')
 
 
-@app.route('/api/deletelooking/<name>', methods=['POST'])
-def remove_from_looking_queue(name):
-    if name in looking_for_partners:
-        looking_for_partners.remove(name)
+@app.route('/api/player', methods=['POST'])
+def add_player():
+    players.add(request.form['name'])
     return redirect('/')
 
 
-@app.route('/api/pairme', methods=['POST'])
+@app.route('/api/player/<name>', methods=['DELETE'])
+def remove_player(name):
+    players.remove(name)
+    return redirect('/')
+
+
+@app.route('/api/pair', methods=['POST'])
 def pair_up():
     body = json.loads(request.data)
-    name1 = body['name1']
-    name2 = body['name2']
-    if name1 and name2:
-        if name1 in looking_for_partners:
-            looking_for_partners.remove(name1)
-        if name2 in looking_for_partners:
-            looking_for_partners.remove(name2)
-        add_match(f'{name1} vs {name2}')
+    pair_players(body['name1'], body['name2'])
     return redirect('/')
+
+
+def pair_players(name1, name2):
+    if name1 and name2:
+        players.remove(name1)
+        players.remove(name2)
+        games.add(f'{name1} vs {name2}')
 
 
 if __name__ == '__main__':

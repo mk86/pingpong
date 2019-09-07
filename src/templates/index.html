@@ -18,17 +18,16 @@
     <script>
         function pairMe(name) {
             txtBox = document.getElementsByName('name')[0]
-            var name2 = txtBox.value;
             var request = new XMLHttpRequest();
-            request.open('POST', "/api/pairme", true);
+            request.open('POST', '/api/pair', true);
             request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-            request.onload = function(){
-                txtBox.value = ''
+            request.onload = function() {
+                txtBox.value = '';
                 location.reload();
             };
             request.send(JSON.stringify({
-                "name1": name,
-                "name2": name2
+                'name1': name,
+                'name2': txtBox.value
             }));
         }
     </script>
@@ -58,10 +57,9 @@
     <div class="row">
         <div class="column col-sm-6">
             <h1>Have a partner?</h1>
-            <form action="/api/add" method="post">
+            <form action="/api/match" method="post">
                 <div class="form-group">
-                    <label>Join the queue..</label>
-                    <input class="form-control" name="match" placeholder="Enter match" type="text">
+                    <input class="form-control" name="match" placeholder="Join the queue.." type="text">
                 </div>
                 <button class="btn btn-primary" type="submit">Submit</button>
             </form>
@@ -86,9 +84,8 @@
         </div>
         <div class="column col-sm-6">
             <h1>Need a partner?</h1>
-            <form action="/api/needpartner" method="post">
+            <form action="/api/player" method="post">
                 <div class="form-group">
-                    <label>Name</label>
                     <input class="form-control" name="name" placeholder="Enter name" type="text">
                 </div>
                 <button class="btn btn-primary" type="submit">Submit</button>
