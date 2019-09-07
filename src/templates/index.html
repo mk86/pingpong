@@ -6,19 +6,14 @@
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
 
     <!-- Bootstrap CSS -->
-    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script crossorigin="anonymous"
-            src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script crossorigin="anonymous"
-            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script crossorigin="anonymous"
-            src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-    <link href="/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet">
 
     <script>
         function pairMe(name) {
@@ -38,24 +33,24 @@
         }
     </script>
 
-    <title>Hello, world!</title>
+    <title>Aspect Ping-pong-atron</title>
 </head>
 <body class="m-3">
 <div class="container-fluid">
     <div class="jumbotron jumbotron" class="rounded">
         <div class="container">
-            <h1 class="display-4"><img src="/images/aspect.png">Aspect Ping-pong-atron</h1>
+            <h1 class="display-4"><img src="/static/images/aspect.png">Aspect Ping-pong-atron</h1>
             {% if current_game %}
-                <p class="lead">Currently playing: {{ current_game }} </p>
-                <p>Started playing at: {{ start_time }} </p>
-                <form action="/api/finished" method="post">
-                    <button class="btn btn-primary" type="submit">Game over</button>
-                </form>
+            <p class="lead">Currently playing: {{ current_game }} </p>
+            <p>Started playing at: {{ start_time }} </p>
+            <form action="/api/finished" method="post">
+                <button class="btn btn-primary" type="submit">Game over</button>
+            </form>
             {% else %}
-                <p class="lead">No one is playing..</p>
-                <form action="/api/quickbook" method="post">
-                    <button class="btn btn-success" type="submit">Play now!</button>
-                </form>
+            <p class="lead">No one is playing..</p>
+            <form action="/api/quickbook" method="post">
+                <button class="btn btn-success" type="submit">Play now!</button>
+            </form>
             {% endif %}
         </div>
     </div>
@@ -76,8 +71,12 @@
             <ul class="list-group">
                 {% for val in queue %}
                 <div class="btn-group" style="padding:0;width=100%">
-                    <button class="btn btn-danger" onclick="deleteMatch('{{ val }}')" type="button"><i class="fa fa-trash-o fa-1g" ></i></button>
-                    <button class="btn {% if loop.first %} btn-success {% else %} btn-light {% endif %} text-left" type="button" style="width:100%" disabled>{% if loop.first %}<span style="font-weight:bold">Next up: </span>{% endif %} {{ val }}</button>
+                    <button class="btn btn-danger" onclick="deleteMatch('{{ val }}')" type="button"><i
+                            class="fa fa-trash-o fa-1g"></i></button>
+                    <button class="btn {% if loop.first %} btn-success {% else %} btn-light {% endif %} text-left"
+                            type="button" style="width:100%" disabled>{% if loop.first %}<span style="font-weight:bold">Next up: </span>{%
+                        endif %} {{ val }}
+                    </button>
                 </div>
                 {% endfor %}
             </ul>

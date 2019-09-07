@@ -1,9 +1,9 @@
 import datetime
 import json
 
-from flask import Flask, render_template, request, redirect, send_from_directory
+from flask import Flask, render_template, request, redirect
 
-app = Flask(__name__, static_url_path='')
+app = Flask(__name__, static_url_path='/static')
 
 queue = ['Mark vs Jess', 'Patrik vs Aaron', 'Nicole vs NEK', 'Le vs The World']
 looking_for_partners = ['Adam']
@@ -18,21 +18,6 @@ def get_index():
                            current_game=current_game,
                            looking_for_partners=looking_for_partners,
                            start_time=start_time)
-
-
-@app.route('/images/<path:path>')
-def send_image(path):
-    return send_from_directory('images', path)
-
-
-@app.route('/css/<path:path>')
-def send_css(path):
-    return send_from_directory('css', path)
-
-
-@app.route('/fonts/<path:path>')
-def send_font(path):
-    return send_from_directory('fonts', path)
 
 
 @app.route('/api/add', methods=['POST'])
